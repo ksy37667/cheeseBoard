@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import User
+from .models import User, Profile
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 # 로그인
 class LoginUserSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):
@@ -40,3 +40,9 @@ class LoginUserSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Unable to log in with provided credentials.")
+
+# 프로필 Seiralizer
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('user_pk', 'nickname', 'phone')

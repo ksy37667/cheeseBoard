@@ -94,9 +94,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
 
 
-# class Profile(models.Models):
-#     user = modesl.OneToOneField(User, on_delete=models.CASCADE)
-#     user_pk = models.IntegerField(black=True)
-#     nickname = models.CharField(max_length=200, blank=True)
-#     point = models.IntegerField(default=0)
-#     phone = models.CharField(max_length=200, blank)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_pk = models.IntegerField(blank=True)
+    nickname = models.CharField(max_length=200, blank=True)
+    point = models.IntegerField(default=0)
+    phone = models.CharField(max_length=200, blank=True)
+
+# @receiver는 User 모델 인스턴스가 생성되면 Profile 모델 인스턴스 또한 함께 생성된다는 뜻이다.
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance, user_pk=instance.id)
+    
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
