@@ -15,56 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from board import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rest-auth/', include('rest_auth.urls')),
-    path('rest-auth/registration/', include('rest_auth.registration.urls')),
-    path('board/', views.PostListGenericAPIView.as_view()),
-    path('board/<int:pk>/', views.PostDetailGenericAPIView.as_view()),
+    path('accounts/', include('accounts.urls')),
+    path('accounts/auth', include('knox.urls')),
 ]
-
-
-#
-
-#     /rest-auth/login/ (POST)
-#         username
-#         email
-#         password
-
-#     Returns Token key
-
-#     /rest-auth/logout/ (POST)
-
-#     /rest-auth/password/reset/ (POST)
-#         email
-
-#     /rest-auth/password/reset/confirm/ (POST)
-#         uid
-#         token
-#         new_password1
-#         new_password2
-
-#     /rest-auth/password/change/ (POST)
-#         new_password1
-#         new_password2
-#         old_password
-
-#     /rest-auth/user/ (GET, PUT, PATCH)
-#         username
-#         first_name
-#         last_name
-
-#     Returns pk, username, email, first_name, last_name
-
-# << Registration >>
-
-#     /rest-auth/registration/ (POST)
-#         username
-#         password1
-#         password2
-#         email
-
-#     /rest-auth/registration/verify-email/ (POST)
-#         key
