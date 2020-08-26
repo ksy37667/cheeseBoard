@@ -1,22 +1,15 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets, permissions, generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from knox.models import AuthToken
-from .serializers import CreateUserSerializer ,UserSerializer, LoginUserSerializer, ProfileSerializer
-
+from rest_framework.decorators import permission_classes, api_view
+from rest_framework.permissions import AllowAny
+from .serializers import UserCreateSerializer, UserLoginSerializer, ProfileSerializer
 from .models import Profile
-
-# Create your views here.
-@api_view(["GET"])
-def Home(request):
-    return Response("Hello world!")
 
 
 class RegistrationAPI(generics.GenericAPIView):
-    serializer_class = CreateUserSerializer
+    permission_classes = (AllowAny,)
+    serializer_class = UserCreateSerializer
 
     def post(self, request, *args, **kwargs):
         if(len(request.data["password"]) < 8):
@@ -24,42 +17,40 @@ class RegistrationAPI(generics.GenericAPIView):
             return Response(body, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        serializer.save()
 
-        return Response(
-            {
-                "email" : UserSerializer(
-                    user, context=self.get_serializer_context()
-                ).data,
-                "token": AuthToken.objects.create(user)[1],
-            }
-        )
+        return Response({"message": "ok"}, status=status.HTTP_201_CREATED)
+
+        # return Response(
+        #     {
+        #         "email" : UserSerializer(
+        #             user, context=self.get_serializer_context()
+        #         ).data,
+        #         "token": AuthToken.objects.create(user)[1],
+        #     }
+        # )
+
 
 class LoginAPI(generics.GenericAPIView):
-    serializer_class = LoginUserSerializer
+    permission_classes = (AllowAny,)
+    serializer_class = UserLoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        return Response(
-            {
-                "user": UserSerializer(
-                    user, context=self.get_serializer_context()
-                ).data,
-                "token": AuthToken.objects.create(user)[1],
-            }
-        )
 
+        if serializer.validated_data['email'] == "None":
+            return Response({'message': 'fail'}, status=status.HTTP_200_OK)
 
-class UserAPI(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UserSerializer
+        response = {
+            'success': 'True',
+            'token': serializer.data['token']
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
-    def get_object(self):
-        return self.request.user
 
 class ProfileUpdateAPI(generics.UpdateAPIView):
     lookup_field = "user_pk"
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
