@@ -26,7 +26,7 @@ SECRET_KEY = '(*qk&w#3#ujrw$8-w+wj^#$oa#95n4uq3wg9g6q5ds+y+9se+6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 AUTHENTICATION_BACKENDS = (
@@ -46,18 +46,25 @@ INSTALLED_APPS = [
     'jwt',
     'accounts',
     'board',
-    'rest_framework_jwt'
+    'rest_framework_jwt',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000'
+]
+
 
 ROOT_URLCONF = 'cheese.urls'
 
