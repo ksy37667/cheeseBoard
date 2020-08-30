@@ -1,53 +1,74 @@
-import React, { useState ,useEffect } from 'react';
+// import React, { useState ,useEffect } from 'react';
+// import axios from 'axios';
+
+import React from 'react';
 import axios from 'axios';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
+import useAsync from './Component/useAsync';
+import Board from './Component/Boards';
 
 
 
+const getBoards = async () => {
+    const response = await axios.get('http://127.0.0.1:8000/boards/brd/')
+    
+    console.log(response.data['results']);
+    return response.data;
+}
 
-const App = (props) => {
-  const [test, setTest] = useState('')
 
-  const apiCall = async () => {
-    let email = "test1@naver.com";
-    let password = "testuser1";
-    const response = await axios.post('http://127.0.0.1:8000/accounts/login/', {
-      email,
-      password
-    }).then(response => {
-      if (response.data.token) {
-        console.log(response.data);
-        localStorage.setItem("access_token", JSON.stringify(response.data));
-      }
-      console.log(localStorage)
-    })
-  };
+const App = () => {
 
-  const logout = () =>{
-    localStorage.removeItem('user');
-  }
-
-  
-  useEffect(() => {
-    logout();
-    apiCall();
-  }, []);
-
-  return (
-    <div>
-    <TableRow>
-      <TableCell>test</TableCell>
-      <TableCell>test</TableCell>
-      <TableCell>test</TableCell>
-      <TableCell>test</TableCell>
-    </TableRow>
-    </div>
-
-  )
-};
+    return (
+        <>
+          <Board />
+        </>
+    )
+}
 
 export default App;
+
+// const App = (props) => {
+//   const [test, setTest] = useState('')
+
+//   const apiCall = async () => {
+//     let email = "test1@naver.com";
+//     let password = "testuser1";
+//     const response = await axios.post('http://127.0.0.1:8000/accounts/login/', {
+//       email,
+//       password
+//     }).then(response => {
+//       if (response.data.token) {
+//         console.log(response.data);
+//         localStorage.setItem("access_token", JSON.stringify(response.data));
+//       }
+//       console.log(localStorage)
+//     })
+//   };
+
+//   const logout = () =>{
+//     localStorage.removeItem('user');
+//   }
+
+
+//   useEffect(() => {
+//     logout();
+//     apiCall();
+//   }, []);
+
+//   return (
+    // <div>
+    // <TableRow>
+    //   <TableCell>test</TableCell>
+    //   <TableCell>test</TableCell>
+    //   <TableCell>test</TableCell>
+    //   <TableCell>test</TableCell>
+    // </TableRow>
+    // </div>
+
+//   )
+// };
+
+// export default App;
 
 // import React, { Component } from "react";
 // import axiosInstance from "./axiosApi";

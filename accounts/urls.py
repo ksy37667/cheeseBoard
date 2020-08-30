@@ -8,3 +8,4 @@ urlpatterns = [
     path('login/', LoginAPI.as_view()),
     path("profile/<int:user_pk>/update/", ProfileUpdateAPI.as_view()),
 ]
+
