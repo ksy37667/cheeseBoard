@@ -11,6 +11,7 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = ('id','title', 'content', 'username', 'created_at', 'updated_at')
 
 
+
 # 최초의 (부모가 존재하지 않는) 댓글만 가져오는 serializer
 class BoardOnlySerializer(serializers.ModelSerializer):
     parent_comment = serializers.SerializerMethodField()
