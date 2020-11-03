@@ -2,13 +2,13 @@ from rest_framework import serializers
 from .models import Board, Comment
 
 class BoardSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField(source='author.username')
+    author = serializers.ReadOnlyField(source='author.username')
 
     # print(author)
     class Meta:
         model = Board
         # fields = '__all__'
-        fields = ('id','title', 'content', 'username', 'created_at', 'updated_at')
+        fields = ('id','title', 'content', 'author', 'created_at', 'updated_at')
 
 
 # 최초의 (부모가 존재하지 않는) 댓글만 가져오는 serializer
